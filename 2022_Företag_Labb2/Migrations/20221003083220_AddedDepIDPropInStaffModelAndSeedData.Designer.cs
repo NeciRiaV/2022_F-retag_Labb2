@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2022_Företag_Labb2.Models;
 
@@ -11,9 +12,10 @@ using _2022_Företag_Labb2.Models;
 namespace _2022_Företag_Labb2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221003083220_AddedDepIDPropInStaffModelAndSeedData")]
+    partial class AddedDepIDPropInStaffModelAndSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +114,7 @@ namespace _2022_Företag_Labb2.Migrations
                     b.HasData(
                         new
                         {
-                            ID = new Guid("1805f9e1-7633-488f-8605-f7059b5ca2dc"),
+                            ID = new Guid("09351153-0f86-44af-b3ee-b863cf656151"),
                             Adress = "Skamman 4",
                             City = "Varberg",
                             DepartmentID = 1,
@@ -125,7 +127,7 @@ namespace _2022_Företag_Labb2.Migrations
                         },
                         new
                         {
-                            ID = new Guid("53f5fc56-2509-4631-89d8-56d0f49219dc"),
+                            ID = new Guid("eec533f0-e065-405d-aea3-c9704e68174a"),
                             Adress = "Nösslingegatan 3",
                             City = "Nösslinge",
                             DepartmentID = 2,
@@ -138,7 +140,7 @@ namespace _2022_Företag_Labb2.Migrations
                         },
                         new
                         {
-                            ID = new Guid("17970383-aa4f-4a79-b9e5-a93a9c5da487"),
+                            ID = new Guid("0bbb5983-02c9-4915-bd6c-01fa83640478"),
                             Adress = "Drottninggatan 6",
                             City = "Varberg",
                             DepartmentID = 3,
@@ -151,7 +153,7 @@ namespace _2022_Företag_Labb2.Migrations
                         },
                         new
                         {
-                            ID = new Guid("9172f46e-72b3-480d-b82e-5e17ca9d4327"),
+                            ID = new Guid("4bc8e90d-5446-4304-8b5b-761430cffb4f"),
                             Adress = "Skamman 5",
                             City = "Varberg",
                             DepartmentID = 4,

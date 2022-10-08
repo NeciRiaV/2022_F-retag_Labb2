@@ -9,18 +9,21 @@ namespace _2022_Företag_Labb2.Controllers
     [Route("api/[controller]")]
     public class StaffController : Controller
     {
+        private readonly IStaffRepository _staffRepository;
         private readonly AppDbContext _appContext;
 
-        public StaffController(AppDbContext appContext)
+        public StaffController(AppDbContext appContext, IStaffRepository staffRepository)
         {
             this._appContext = appContext;
+            _staffRepository = staffRepository;
         }
+
 
         //GET ALL STAFF
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAllEmployees()
         {
-            var staff = await _appContext.Staffs.ToListAsync();
+            var staff = _staffRepository.GetAllStaff.ToList();
             return Ok(staff);
         }
 
@@ -28,9 +31,9 @@ namespace _2022_Företag_Labb2.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetSingleEmployee")]
-        public async Task<IActionResult> GetSingelEmployee([FromRoute]Guid id)
+        public IActionResult GetSingelEmployee([FromRoute] Guid id)
         {
-            var employee = await _appContext.Staffs.FirstOrDefaultAsync(emp => emp.ID == id);
+            var employee = _staffRepository.GetStaffById(id);
             if (employee != null)
             {
                 return Ok(employee);
@@ -40,52 +43,43 @@ namespace _2022_Företag_Labb2.Controllers
 
         //ADD NEW EMPLOYEE
         [HttpPost]
-        public async Task<IActionResult> AddEmployee([FromBody]Staff staff)
+        public async Task<ActionResult<Staff>> AddEmployee([FromBody] Staff staff)
         {
-            staff.ID = Guid.NewGuid();
-            await _appContext.Staffs.AddAsync(staff);
-            await _appContext.SaveChangesAsync();
+            try
+            {
+                var newEmployee = await _staffRepository.Add(staff);
+                CreatedAtAction(nameof(GetSingelEmployee), new { id = newEmployee.ID }, newEmployee);
+                return Ok(newEmployee);
 
-            return CreatedAtAction(nameof(GetSingelEmployee), new { id = staff.ID }, staff);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Data couldn't be retrieved...");
+            }
+
         }
 
-        //UPDATE / EDIT EMPLOYEE
+        //UPDATE EMPLOYEE
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<IActionResult> EditEmployee([FromRoute]Guid id, Staff staff)
+        public async Task<ActionResult<Staff>> UpdateEmployee([FromRoute] Guid id, [FromBody] Staff staff)
         {
-            var editEmployee = await _appContext.Staffs.FirstOrDefaultAsync(emp => emp.ID == id);
-            if (editEmployee != null)
-            {
-                editEmployee.FirstName = staff.FirstName;
-                editEmployee.LastName = staff.LastName;
-                editEmployee.Email = staff.Email;
-                editEmployee.PhoneNumber = staff.PhoneNumber;
-                editEmployee.Adress = staff.Adress;
-                editEmployee.City = staff.City;
-                editEmployee.ZipCode = staff.ZipCode;
-                editEmployee.Salary = staff.Salary;
-                editEmployee.Department = staff.Department;
-
-                await _appContext.SaveChangesAsync();
-                return Ok(editEmployee);
-            }
-            return NotFound("Employee Not Found");
+                var employee = _staffRepository.GetStaffById(id);
+                if (employee == null)
+                {
+                    return NotFound("Employee Not Found");
+                }
+                return await _staffRepository.Update(staff);
         }
 
         //DELETE EMPLOYEE
         [HttpDelete]
         [Route("{id:guid}")]
-        public async Task<IActionResult> DeleteEmployee([FromRoute]Guid id)
+        public async Task<IActionResult> DeleteEmployee([FromRoute] Guid id)
         {
-            var deleteEmployee = await _appContext.Staffs.FirstOrDefaultAsync(emp => emp.ID == id);
-            if (deleteEmployee != null)
-            {
-                _appContext.Staffs.Remove(deleteEmployee);
-                await _appContext.SaveChangesAsync();
-                return Ok(deleteEmployee);
-            }
-            return NotFound("Employee Not Found");
+            await _staffRepository.Delete(id);
+            return Ok();
         }
     }
 }
