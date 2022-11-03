@@ -23,7 +23,7 @@ namespace _2022_Företag_Labb2.Controllers
         [HttpGet]
         public IActionResult GetAllEmployees()
         {
-            var staff = _staffRepository.GetAllStaff.ToList();
+            var staff = _staffRepository.GetAllStaff();
             return Ok(staff);
         }
 
@@ -33,12 +33,20 @@ namespace _2022_Företag_Labb2.Controllers
         [ActionName("GetSingleEmployee")]
         public IActionResult GetSingelEmployee([FromRoute] Guid id)
         {
+            try
+            {
             var employee = _staffRepository.GetStaffById(id);
             if (employee != null)
             {
                 return Ok(employee);
             }
             return NotFound("Employee NotFound");
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Data couldn't be retrieved...");
+            }
         }
 
         //ADD NEW EMPLOYEE
@@ -65,12 +73,19 @@ namespace _2022_Företag_Labb2.Controllers
         [Route("{id:guid}")]
         public async Task<ActionResult<Staff>> UpdateEmployee([FromRoute] Guid id, [FromBody] Staff staff)
         {
+            try
+            {
                 var employee = _staffRepository.GetStaffById(id);
                 if (employee == null)
                 {
                     return NotFound("Employee Not Found");
                 }
                 return await _staffRepository.Update(staff);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Data couldn't be retrieved...");
+            }
         }
 
         //DELETE EMPLOYEE
@@ -78,8 +93,16 @@ namespace _2022_Företag_Labb2.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteEmployee([FromRoute] Guid id)
         {
+            try
+            {
             await _staffRepository.Delete(id);
             return Ok();
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Data couldn't be retrieved...");
+            }
         }
     }
 }

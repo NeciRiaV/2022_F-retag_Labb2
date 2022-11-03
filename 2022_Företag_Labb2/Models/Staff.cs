@@ -32,7 +32,7 @@ namespace _2022_Företag_Labb2.Models
 
         [Required]
         public decimal Salary { get; set; }
-
+        public string? ImageUrl { get; set; }
         public int DepartmentID { get; set; }
         public Department? Department { get; set; }
     }

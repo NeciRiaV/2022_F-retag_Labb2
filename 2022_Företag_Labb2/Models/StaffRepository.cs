@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace _2022_Företag_Labb2.Models
 {
@@ -12,12 +13,42 @@ namespace _2022_Företag_Labb2.Models
         }
 
         //GET ALL STAFF
-        public IEnumerable<Staff> GetAllStaff
+        public ICollection GetAllStaff()
         {
-            get
-            {
-                return _appContext.Staffs;
-            }
+                var employee = (from sta in _appContext.Staffs
+                                join dep in _appContext.Departments
+                                on sta.DepartmentID equals dep.DepID
+                                select new
+                                {
+                                    id = sta.ID,
+                                    firstName = sta.FirstName,
+                                    lastName = sta.LastName,
+                                    email = sta.Email,
+                                    phoneNumber = sta.PhoneNumber,
+                                    adress = sta.Adress,
+                                    city = sta.City,
+                                    zipCode = sta.ZipCode,
+                                    salary = sta.Salary,
+                                    imageUrl = sta.ImageUrl,
+                                    departmentId = sta.DepartmentID,
+                                    departmentName = dep.DepartmentName,
+                                }).ToList();
+                return employee;
+
+
+                //var department = (from dep in _appContext.Departments
+                //                  join staff in _appContext.Staffs
+                //                  on dep.DepID equals staff.DepartmentID
+                //                  where dep.DepID == id
+                //                  select new
+                //                  {
+                //                      depName = dep.DepartmentName,
+                //                      staffFirst = staff.FirstName,
+                //                      staffLast = staff.LastName,
+                //                      staffMail = staff.Email
+
+                //                  }).ToListAsync();
+                //return await department;
         }
 
         //GET SINGLE EMPLOYEE

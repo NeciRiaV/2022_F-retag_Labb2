@@ -7,43 +7,22 @@ namespace _2022_Företag_Labb2.Controllers
     [Route("api/[controller]")]
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepo;
-        public DepartmentController(IDepartmentRepository departmentRepo)
+        private readonly IDepartmentRepository _depRepository;
+        private readonly AppDbContext _appContext;
+
+        public DepartmentController(AppDbContext appContext, IDepartmentRepository depRepository)
         {
-            _departmentRepo = departmentRepo;
+            this._appContext = appContext;
+            _depRepository = depRepository;
         }
 
 
-        //GET ALL DEPARTMENTS
+        //GET ALL STAFF
         [HttpGet]
         public IActionResult GetAllDepartments()
         {
-            try
-            {
-                var departments = _departmentRepo.GetAllDepartments.ToList();
-                return Ok(departments);
-
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Couldn't retrieve data from database...");
-            }
-        }
-
-        //GET SINGEL DEPARTMENT WITH ALL IT'S STAFF
-        [HttpGet]
-        [Route("{id:int}")]
-        [ActionName("GetSingelDepartmentWithStaff")]
-        public async Task<IActionResult> GetSingelDepartmentWithStaff([FromRoute] int id)
-        {
-            try
-            {
-                return Ok(await _departmentRepo.GetDepartmentById(id));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Couldn't retrieve data from database...");
-            }
+            var dep = _depRepository;
+            return Ok(dep);
         }
     }
 }

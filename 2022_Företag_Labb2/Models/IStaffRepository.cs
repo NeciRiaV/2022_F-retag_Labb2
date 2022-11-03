@@ -1,8 +1,10 @@
-﻿namespace _2022_Företag_Labb2.Models
+﻿using System.Collections;
+
+namespace _2022_Företag_Labb2.Models
 {
     public interface IStaffRepository
     {
-        IEnumerable<Staff> GetAllStaff { get; }
+        ICollection GetAllStaff();
         Staff GetStaffById(Guid id);
         Task<Staff> Add(Staff staff);
         Task<Staff> Update(Staff staff);
